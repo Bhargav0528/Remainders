@@ -1,35 +1,53 @@
 package com.personal.todoapp.controller;
 
-import com.personal.todoapp.entity.TodoItem;
-import com.personal.todoapp.repo.TodoItemRepository;
+import com.personal.todoapp.dto.TodoItemDTO;
+import com.personal.todoapp.service.TodoItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 //controller = input apis
 //service  = business logic
-//repository =
+//repository = talk to db
+//
+
+//CRUD
+// JSON
+// STATELESS
+
+/**
+ * Categories
+ */
 
 @RestController
 public class TodoItemController {
 
   @Autowired
-  TodoItemRepository todoItemRepository;
+  TodoItemService todoItemService;
 
-  @GetMapping("/todoItem")
-  public ResponseEntity<String> getTodoItems() {
-    return new ResponseEntity<>("todoItems", HttpStatus.OK);
+  @PostMapping("/todoitem/save")
+  public ResponseEntity<Boolean> saveTodoItem(@RequestBody TodoItemDTO todoItemDTO) {
+    todoItemService.saveTodoItem(todoItemDTO);
+    return new ResponseEntity<>(true, HttpStatus.OK);
   }
 
-  @PostMapping("/todoItem")
-  public ResponseEntity<String> getTodoItems(@RequestBody TodoItem todoItem) {
-    todoItemRepository.save(todoItem);
-    return new ResponseEntity<>("done", HttpStatus.OK);
+  @GetMapping("/todoitem/fetch")
+  public ResponseEntity<List<TodoItemDTO>> fetchAllTodoItems() {
+    return new ResponseEntity<>(todoItemService.fetchAllTodoItems(), HttpStatus.OK);
   }
+
+  @GetMapping("/todoitem/fetch/name/")
+  public ResponseEntity<List<TodoItemDTO>> fetchTodoItemsByname(@RequestParam String itemName) {
+    return new ResponseEntity<>(todoItemService.fetchAllTodoItems(itemName), HttpStatus.OK);
+  }
+
 
   // GET != body , POST body
   // GET "/todoItem" - todoItemController.getTodoItems();
