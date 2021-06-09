@@ -11,4 +11,5 @@ public class TodoItemDTO {
   private String title;
   private String description;
   private String authorName;
+  private String categoryName;
 }

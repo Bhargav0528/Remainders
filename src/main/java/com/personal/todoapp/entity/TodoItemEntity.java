@@ -13,7 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.util.Date;
 
-
 @Entity
 @Data
 @NoArgsConstructor
@@ -29,7 +28,7 @@ public class TodoItemEntity {
   private String authorName;
   private Date createdAt;
 
-  @ManyToOne
-  @JoinColumn(name = "category")
-  private CategoryEntity categories;
+  @ManyToOne()
+  @JoinColumn(name = "categoryEntity")
+  private CategoryEntity categoryEntity;
 }

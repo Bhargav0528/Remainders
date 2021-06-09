@@ -2,7 +2,9 @@ package com.personal.todoapp.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.personal.todoapp.dto.TodoItemDTO;
+import com.personal.todoapp.entity.CategoryEntity;
 import com.personal.todoapp.entity.TodoItemEntity;
+import com.personal.todoapp.repo.CategoryRepository;
 import com.personal.todoapp.repo.TodoItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -20,6 +22,9 @@ public class TodoItemServiceImpl implements TodoItemService{
   @Autowired
   private TodoItemRepository todoItemRepository;
 
+  @Autowired
+  private CategoryRepository categoryRepository;
+
   @Override
   public void saveTodoItem(TodoItemDTO todoItemDTO) {
 //    TodoItem todoItem = new TodoItem();
@@ -31,15 +36,53 @@ public class TodoItemServiceImpl implements TodoItemService{
 //    ObjectMapper objectMapper = new ObjectMapper();
 //    TodoItemEntity todoItemEntity = objectMapper.convertValue(todoItemDTO, TodoItemEntity.class);
 
+    //Manual
+    /*
+    Integer categoryId = null;
+    CategoryEntity categoryEntity = categoryRepository.findByName(todoItemDTO.getCategoryName());
+
+    if (categoryEntity != null) {
+      categoryId = categoryEntity.getId();
+    } else {
+      categoryEntity = new CategoryEntity();
+      categoryEntity.setName(todoItemDTO.getCategoryName());
+      categoryEntity = categoryRepository.save(categoryEntity);
+      categoryId = categoryEntity.getId();
+    }
+
     TodoItemEntity todoItemEntity =
         TodoItemEntity.builder()
             .title(todoItemDTO.getTitle())
             .description(todoItemDTO.getDescription())
             .authorName(todoItemDTO.getAuthorName())
             .createdAt(new Date())
+            .catId(categoryId)
             .build();
 
     todoItemRepository.save(todoItemEntity);
+     */
+
+    CategoryEntity categoryEntity = categoryRepository.findByName(todoItemDTO.getCategoryName());
+
+    if (categoryEntity == null) {
+      categoryEntity = new CategoryEntity();
+      categoryEntity.setName(todoItemDTO.getCategoryName());
+      categoryEntity = categoryRepository.save(categoryEntity);
+    }
+
+    TodoItemEntity todoItemEntity =
+            TodoItemEntity.builder()
+                    .title(todoItemDTO.getTitle())
+                    .description(todoItemDTO.getDescription())
+                    .authorName(todoItemDTO.getAuthorName())
+                    .createdAt(new Date())
+                    .categoryEntity(categoryEntity)
+                    .build();
+
+    todoItemRepository.save(todoItemEntity);
+
+
+
   }
 
   @Override
@@ -52,6 +95,7 @@ public class TodoItemServiceImpl implements TodoItemService{
        todoItemDTO.setTitle(todoItemEntity.getTitle());
        todoItemDTO.setDescription(todoItemEntity.getDescription());
        todoItemDTO.setAuthorName(todoItemEntity.getAuthorName());
+       todoItemDTO.setCategoryName(todoItemEntity.getCategoryEntity().getName());
        todoItemDTOS.add(todoItemDTO);
      }
      return todoItemDTOS;

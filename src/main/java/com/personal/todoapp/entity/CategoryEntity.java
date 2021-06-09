@@ -16,8 +16,9 @@ public class CategoryEntity {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Integer id;
 
-  private String title;
+  private String name;
 
-  @OneToMany(mappedBy = "categories")
+  @OneToMany(mappedBy = "categoryEntity")
   private List<TodoItemEntity> todoItemEntities;
+
 }
